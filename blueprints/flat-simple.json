@@ -1,0 +1,10 @@
+{
+  "name": "flat-simple",
+  "description": "One flat price, no metering. The pre-PMF gate: if nobody pays yet, ship simple and learn.",
+  "citation": "Pricing in the AI Age (Dodo, 2026) — Ch. 10 Phase 1: \"simplicity is a feature\"",
+  "prices_as_of": "2026-07",
+  "defaults": {
+    "tier_price_usd": 9,
+    "promo": { "percent": 30, "months": 3 }
+  }
+}

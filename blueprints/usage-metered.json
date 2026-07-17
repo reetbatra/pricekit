@@ -1,0 +1,16 @@
+{
+  "name": "usage-metered",
+  "description": "Pure usage metering, no base fee. For API-first products and autonomous/platform-driven consumption.",
+  "citation": "Pricing in the AI Age (Dodo, 2026) — Q2 (devs punish paying for what they don't use), Ch. 4 autonomy axis",
+  "prices_as_of": "2026-07",
+  "model_cost_per_unit": { "frontier": 0.000015, "mid": 0.000004, "mini": 0.0000002, "stt": 0.006 },
+  "defaults": {
+    "margin": 0.7,
+    "infra_monthly_usd": 0.5,
+    "assumed_actions_per_user": 300,
+    "overage_multiplier": 1.25,
+    "overage_behavior": "invoice_at_billing",
+    "low_balance_threshold_percent": 10,
+    "credit_expiry_days": 30
+  }
+}

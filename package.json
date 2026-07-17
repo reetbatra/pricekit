@@ -1,0 +1,23 @@
+{
+  "name": "paykit",
+  "version": "0.1.0",
+  "description": "Pricing copilot for Dodo Payments credit billing — recommends your pricing model, computes the numbers in the open, provisions test-mode billing, and verifies the wiring.",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "plan": "tsx scripts/plan.ts",
+    "provision": "tsx scripts/provision.ts",
+    "verify": "tsx scripts/verify.ts",
+    "fire-usage": "tsx scripts/fire-usage.ts",
+    "test": "tsx scripts/plan.test.ts"
+  },
+  "dependencies": {
+    "dodopayments": "^2.42.2",
+    "dotenv": "^16.4.5"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0",
+    "@types/node": "^22.0.0"
+  }
+}
