@@ -5,7 +5,7 @@ import { dodoClient } from "../src/dodo.js";
 // The seven checks. Green means wired — not "probably wired".
 // --json emits {checks:[{id,status,fix}]} — the agent's fix-loop format.
 
-const APP_URL = process.env.PAYKIT_APP_URL ?? "http://localhost:3000";
+const APP_URL = process.env.PRICEKIT_APP_URL ?? "http://localhost:3000";
 const WEBHOOK_PATH = "/api/webhook";
 const asJson = process.argv.includes("--json");
 
@@ -21,7 +21,7 @@ const record = (id: string, status: CheckResult["status"], detail: string, fix =
 };
 
 function blueprint() {
-  return JSON.parse(readFileSync(".paykit/blueprint.json", "utf8"));
+  return JSON.parse(readFileSync(".pricekit/blueprint.json", "utf8"));
 }
 
 // 1 — env sane (test mode is hardcoded in the client; key presence checked here)
@@ -29,16 +29,16 @@ try {
   if (!process.env.DODO_PAYMENTS_API_KEY) throw new Error("DODO_PAYMENTS_API_KEY missing");
   if (!process.env.DODO_PAYMENTS_WEBHOOK_KEY?.startsWith("whsec_"))
     throw new Error("DODO_PAYMENTS_WEBHOOK_KEY missing or not a whsec_ secret");
-  if (!existsSync(".paykit/blueprint.json")) throw new Error(".paykit/blueprint.json missing");
+  if (!existsSync(".pricekit/blueprint.json")) throw new Error(".pricekit/blueprint.json missing");
   record("1-env", "green", "API key + webhook secret + blueprint present; mode locked to test_mode");
 } catch (e) {
-  record("1-env", "red", (e as Error).message, "Fill .env per README; run `npx paykit provision`.");
+  record("1-env", "red", (e as Error).message, "Fill .env per README; run `npx pricekit provision`.");
 }
 
 const client = process.env.DODO_PAYMENTS_API_KEY ? dodoClient() : null;
 
 // 2 — provisioned objects exist
-if (client && existsSync(".paykit/blueprint.json")) {
+if (client && existsSync(".pricekit/blueprint.json")) {
   const bp = blueprint();
   try {
     await client.meters.retrieve(bp.meter_id);
@@ -46,22 +46,22 @@ if (client && existsSync(".paykit/blueprint.json")) {
     await client.products.retrieve(bp.product_id);
     record("2-objects", "green", `meter ${bp.meter_id} · entitlement ${bp.credit_entitlement_id} · product ${bp.product_id}`);
   } catch (e) {
-    record("2-objects", "red", `provisioned object missing: ${(e as Error).message}`, "Re-run `npx paykit provision`.");
+    record("2-objects", "red", `provisioned object missing: ${(e as Error).message}`, "Re-run `npx pricekit provision`.");
   }
 
   // 3 — real test checkout session
   try {
     const s = await client.checkoutSessions.create({
       product_cart: [{ product_id: bp.product_id, quantity: 1 }],
-      customer: { email: "verify@paykit.dev", name: "paykit verify" },
+      customer: { email: "verify@pricekit.dev", name: "pricekit verify" },
       return_url: APP_URL,
-      metadata: { paykit_verify: "true" },
+      metadata: { pricekit_verify: "true" },
     } as any);
     const url = (s as any).checkout_url ?? (s as any).url;
     if (!url) throw new Error("no checkout URL in response");
     record("3-checkout", "green", `checkout session created: ${String(url).slice(0, 60)}…`);
   } catch (e) {
-    record("3-checkout", "red", (e as Error).message, "Check product_id in .paykit/blueprint.json; see API error body above.");
+    record("3-checkout", "red", (e as Error).message, "Check product_id in .pricekit/blueprint.json; see API error body above.");
   }
 
   // 4 — ingest one usage event
@@ -103,15 +103,15 @@ try {
     record("5-forgery", "green", `unsigned webhook rejected (${r.status})`);
   }
 } catch (e) {
-  record("5-forgery", "red", `app not reachable at ${APP_URL}: ${(e as Error).message}`, "Start the app (npm run dev) or set PAYKIT_APP_URL.");
+  record("5-forgery", "red", `app not reachable at ${APP_URL}: ${(e as Error).message}`, "Start the app (npm run dev) or set PRICEKIT_APP_URL.");
 }
 
 // 6 — truth: a correctly signed synthetic credit.balance_low must be accepted AND handled
 try {
   const secret = process.env.DODO_PAYMENTS_WEBHOOK_KEY ?? "";
-  const bp = existsSync(".paykit/blueprint.json") ? blueprint() : { low_balance_threshold: 35 };
+  const bp = existsSync(".pricekit/blueprint.json") ? blueprint() : { low_balance_threshold: 35 };
   const payload = JSON.stringify({
-    business_id: "bus_paykit_verify",
+    business_id: "bus_pricekit_verify",
     type: "credit.balance_low",
     timestamp: new Date().toISOString(),
     data: {
@@ -136,17 +136,17 @@ try {
     body: payload,
   });
   if (!(r.status >= 200 && r.status < 300)) throw new Error(`signed webhook rejected (${r.status})`);
-  const sideEffect = ".paykit/last-webhook.json";
-  if (!existsSync(sideEffect)) throw new Error("accepted, but .paykit/last-webhook.json was not written");
+  const sideEffect = ".pricekit/last-webhook.json";
+  if (!existsSync(sideEffect)) throw new Error("accepted, but .pricekit/last-webhook.json was not written");
   const seen = JSON.parse(readFileSync(sideEffect, "utf8"));
   if (seen.type !== "credit.balance_low") throw new Error(`side-effect file has type ${seen.type}`);
   record("6-signed", "green", "signed balance_low accepted; handler side-effect confirmed");
 } catch (e) {
-  record("6-signed", "red", (e as Error).message, "Webhook route must verify Standard Webhooks signatures and write .paykit/last-webhook.json.");
+  record("6-signed", "red", (e as Error).message, "Webhook route must verify Standard Webhooks signatures and write .pricekit/last-webhook.json.");
 }
 
 // 7 — balance readable (soft-warn)
-if (client && existsSync(".paykit/blueprint.json")) {
+if (client && existsSync(".pricekit/blueprint.json")) {
   const bp = blueprint();
   try {
     if (!bp.demo_customer_id) throw new Error("no demo customer yet");
@@ -162,7 +162,7 @@ if (client && existsSync(".paykit/blueprint.json")) {
 if (asJson) {
   console.log(JSON.stringify({ checks: results.map(({ id, status, fix }) => ({ id, status, fix })) }, null, 2));
 } else {
-  console.log("\n  paykit verify — green means wired, not \"probably wired\"\n");
+  console.log("\n  pricekit verify — green means wired, not \"probably wired\"\n");
   for (const r of results) {
     const dot = r.status === "green" ? "🟢" : r.status === "warn" ? "🟡" : "🔴";
     console.log(`  ${dot}  ${r.id.padEnd(11)} ${r.detail}${r.fix && r.status !== "green" ? `\n       fix: ${r.fix}` : ""}`);

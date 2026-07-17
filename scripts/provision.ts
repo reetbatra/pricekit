@@ -1,7 +1,7 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync, appendFileSync } from "node:fs";
-import { dodoClient, PAYKIT_META } from "../src/dodo.js";
+import { dodoClient, PRICEKIT_META } from "../src/dodo.js";
 
-// Provisions the billing objects for the plan in .paykit/plan.json.
+// Provisions the billing objects for the plan in .pricekit/plan.json.
 // Idempotent: lists before creating; re-runs create nothing new.
 // Order per runbook: meter → credit entitlement → product.
 
@@ -18,10 +18,10 @@ interface PlanFile {
 }
 
 function loadPlan(): PlanFile {
-  if (!existsSync(".paykit/plan.json")) {
-    throw new Error(`.paykit/plan.json not found — run \`npx paykit plan\` first.`);
+  if (!existsSync(".pricekit/plan.json")) {
+    throw new Error(`.pricekit/plan.json not found — run \`npx pricekit plan\` first.`);
   }
-  return JSON.parse(readFileSync(".paykit/plan.json", "utf8"));
+  return JSON.parse(readFileSync(".pricekit/plan.json", "utf8"));
 }
 
 const plan = loadPlan();
@@ -42,7 +42,7 @@ async function findOrCreateMeter() {
     event_name: EVENT_NAME,
     measurement_unit: plan.unit_name,
     aggregation: { type: "count" },
-    description: `1 event = 1 processed ${plan.unit_name} (paykit)`,
+    description: `1 event = 1 processed ${plan.unit_name} (pricekit)`,
   });
   console.log(`  ✓ meter created: ${m.id} (${METER_NAME})`);
   return m;
@@ -78,7 +78,7 @@ async function findOrCreateEntitlement() {
 async function findOrCreateProduct(meterId: string, entitlementId: string) {
   for await (const p of client.products.list()) {
     const full = await client.products.retrieve(p.product_id).catch(() => null);
-    if (full && (full as any).metadata?.paykit === PAYKIT_META.paykit && full.name === PRODUCT_NAME) {
+    if (full && (full as any).metadata?.pricekit === PRICEKIT_META.pricekit && full.name === PRODUCT_NAME) {
       console.log(`  ↺ product reused: ${p.product_id} (${PRODUCT_NAME})`);
       return full;
     }
@@ -86,7 +86,7 @@ async function findOrCreateProduct(meterId: string, entitlementId: string) {
   const p = await client.products.create({
     name: PRODUCT_NAME,
     tax_category: "saas",
-    metadata: { ...PAYKIT_META },
+    metadata: { ...PRICEKIT_META },
     price: {
       type: "usage_based_price",
       currency: "USD",
@@ -137,9 +137,9 @@ const meter = await findOrCreateMeter();
 const entitlement = await findOrCreateEntitlement();
 const product = await findOrCreateProduct(meter.id, entitlement.id);
 
-mkdirSync(".paykit", { recursive: true });
+mkdirSync(".pricekit", { recursive: true });
 writeFileSync(
-  ".paykit/blueprint.json",
+  ".pricekit/blueprint.json",
   JSON.stringify(
     {
       mode: "test_mode",
@@ -160,7 +160,7 @@ if (!existsSync(".gitignore") || !readFileSync(".gitignore", "utf8").includes(".
   appendFileSync(".gitignore", "\n.env\n");
 }
 
-console.log(`\n  Written: .paykit/blueprint.json`);
+console.log(`\n  Written: .pricekit/blueprint.json`);
 console.log(`
   ── ONE MANUAL STEP (webhooks need a public URL) ──────────────────
   1. In another terminal:  cloudflared tunnel --url http://localhost:3000
@@ -173,5 +173,5 @@ console.log(`
   Then hand your coding agent this line:
 
     Read skill/SKILL.md and integrate this billing into the app.
-    When finished, run \`npx paykit verify --json\` and fix anything red.
+    When finished, run \`npx pricekit verify --json\` and fix anything red.
 `);

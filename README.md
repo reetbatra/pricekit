@@ -1,8 +1,8 @@
-# paykit
+# pricekit
 
-**Know what to charge — then ship it.** paykit is a pricing copilot for
+**Know what to charge — then ship it.** pricekit is a pricing copilot for
 [Dodo Payments](https://dodopayments.com) credit billing: your coding agent
-reads your app, paykit's deterministic engine recommends a pricing model and
+reads your app, pricekit's deterministic engine recommends a pricing model and
 computes the numbers in the open (using the frameworks from Dodo's
 [*Pricing in the AI Age*](https://dodopayments.com/ebooks/pricing-in-the-ai-age)
 report), provisions the billing objects in **test mode**, hands your agent a
@@ -16,28 +16,28 @@ thing you never let a model improvise.
 
 ## Quickstart (~15 minutes)
 
-In your own app's directory — no clone needed, `npx` fetches paykit for you:
+In your own app's directory — no clone needed, `npx` fetches pricekit for you:
 
 ```bash
 # .env:  DODO_PAYMENTS_API_KEY=<your TEST MODE key>
 ```
 
 1. **Plan** — your agent builds the app profile (see `skill/SKILL.md` Step 0), then:
-   `npx paykit plan --app myapp --profile '<json>'`
+   `npx pricekit plan --app myapp --profile '<json>'`
    → THE PLAN prints: cost/action, credit price at your margin, tier, overage,
    rollover, promo. Every number shown. Every number overridable.
-2. **Provision** — `npx paykit provision`
+2. **Provision** — `npx pricekit provision`
    → meter + credit entitlement + product created in your Dodo **test** account
    (idempotent: re-runs create nothing new). Prints the one manual webhook step.
 3. **Integrate** — paste the printed line into your coding agent:
    *"Read skill/SKILL.md and integrate this billing into the app. When
-   finished, run `npx paykit verify --json` and fix anything red."*
-4. **Prove** — `npx paykit verify`
+   finished, run `npx pricekit verify --json` and fix anything red."*
+4. **Prove** — `npx pricekit verify`
    → 7 checks: env → objects → real checkout → real usage event →
    **forged webhook rejected** → **signed webhook handled** → balance readable.
    Green means wired. Not "probably wired".
 
-Developing paykit itself (not integrating it into an app)? Clone this repo and
+Developing pricekit itself (not integrating it into an app)? Clone this repo and
 use `npm run plan` / `npm run provision` / `npm run verify` instead — same
 scripts, run locally.
 
@@ -49,8 +49,8 @@ scripts, run locally.
 | Credit entitlement | custom unit, precision 0, 30-day expiry, rollover 50% (1 mo), overage +25% invoiced at billing |
 | Product | $tier/mo usage-based price, credits granted per cycle, low-balance alert at 10% |
 
-Everything is tagged `metadata.paykit` — provisioning is idempotent and
-auditable. Test mode is **hardcoded**; paykit refuses to touch live data
+Everything is tagged `metadata.pricekit` — provisioning is idempotent and
+auditable. Test mode is **hardcoded**; pricekit refuses to touch live data
 regardless of the key you give it.
 
 ## How the recommendation works

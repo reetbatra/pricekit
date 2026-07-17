@@ -5,6 +5,6 @@ import { Checkout } from "@dodopayments/nextjs";
 export const GET = Checkout({
   bearerToken: process.env.DODO_PAYMENTS_API_KEY!,
   environment: "test_mode",
-  returnUrl: process.env.PAYKIT_APP_URL ?? "http://localhost:3000",
+  returnUrl: process.env.PRICEKIT_APP_URL ?? "http://localhost:3000",
   type: "session",
 });

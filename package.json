@@ -1,5 +1,5 @@
 {
-  "name": "paykit",
+  "name": "pricekit",
   "version": "0.1.0",
   "description": "Pricing copilot for Dodo Payments credit billing — recommends your pricing model, computes the numbers in the open, provisions test-mode billing, and verifies the wiring.",
   "license": "MIT",
@@ -7,13 +7,20 @@
   "author": "Reet Batra",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/reetbatra/paykit.git"
+    "url": "git+https://github.com/reetbatra/pricekit.git"
   },
-  "homepage": "https://github.com/reetbatra/paykit#readme",
-  "bugs": "https://github.com/reetbatra/paykit/issues",
-  "keywords": ["dodo-payments", "pricing", "billing", "credits", "usage-based-billing", "cli"],
+  "homepage": "https://github.com/reetbatra/pricekit#readme",
+  "bugs": "https://github.com/reetbatra/pricekit/issues",
+  "keywords": [
+    "dodo-payments",
+    "pricing",
+    "billing",
+    "credits",
+    "usage-based-billing",
+    "cli"
+  ],
   "bin": {
-    "paykit": "./bin/paykit.js"
+    "pricekit": "bin/pricekit.js"
   },
   "files": [
     "bin",

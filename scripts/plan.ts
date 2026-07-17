@@ -2,7 +2,7 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import { buildPlan, renderPlan, renderPlanMd } from "../src/plan-engine.js";
 import type { AppProfile } from "../src/detect-schema.js";
 
-// Usage: npx paykit plan --app <name> --profile '<json>'
+// Usage: npx pricekit plan --app <name> --profile '<json>'
 // The integrating agent fills the profile by reading the repo (skill Step 0)
 // and passes it here. The engine does the math; agents never do arithmetic.
 
@@ -16,9 +16,9 @@ const profileJson = arg("profile");
 
 if (!profileJson) {
   console.error(
-    `Usage: npx paykit plan --app <name> --profile '<AppProfile JSON>'\n` +
+    `Usage: npx pricekit plan --app <name> --profile '<AppProfile JSON>'\n` +
       `See src/detect-schema.ts for the profile shape. Example:\n` +
-      `npx paykit plan --app echoscribe --profile '{"has_paying_users":true,` +
+      `npx pricekit plan --app echoscribe --profile '{"has_paying_users":true,` +
       `"output_countable":true,"trigger":"user","api_first":false,` +
       `"action_desc":"STT + summarize + infra","unit_name":"minute",` +
       `"cost_inputs":{"model_class":"stt","tokens_or_units":1,` +
@@ -42,11 +42,11 @@ for (const r of plan.classification.reasoning) console.log(`  ${r}`);
 console.log();
 console.log(renderPlan(appName, plan));
 
-mkdirSync(".paykit", { recursive: true });
-writeFileSync(".paykit/plan.md", renderPlanMd(appName, plan));
+mkdirSync(".pricekit", { recursive: true });
+writeFileSync(".pricekit/plan.md", renderPlanMd(appName, plan));
 writeFileSync(
-  ".paykit/plan.json",
+  ".pricekit/plan.json",
   JSON.stringify({ app: appName, blueprint: plan.classification.blueprint, ...plan }, null, 2)
 );
-console.log(`\n  Written: .paykit/plan.md · .paykit/plan.json`);
-console.log(`  Next: npx paykit provision`);
+console.log(`\n  Written: .pricekit/plan.md · .pricekit/plan.json`);
+console.log(`  Next: npx pricekit provision`);

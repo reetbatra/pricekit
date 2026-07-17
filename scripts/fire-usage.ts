@@ -9,9 +9,9 @@ import { dodoClient } from "../src/dodo.js";
 // in one batch; that's the platform's real architecture, shown honestly.
 
 const N = Number(process.argv[2] ?? 320);
-const bp = JSON.parse(readFileSync(".paykit/blueprint.json", "utf8"));
+const bp = JSON.parse(readFileSync(".pricekit/blueprint.json", "utf8"));
 if (!bp.demo_customer_id) {
-  throw new Error("No demo_customer_id in .paykit/blueprint.json — complete one test checkout first.");
+  throw new Error("No demo_customer_id in .pricekit/blueprint.json — complete one test checkout first.");
 }
 
 const client = dodoClient();

@@ -1,7 +1,7 @@
 import "dotenv/config";
 import DodoPayments from "dodopayments";
 
-/** TEST MODE is hardcoded. paykit refuses to touch live data regardless of the
+/** TEST MODE is hardcoded. pricekit refuses to touch live data regardless of the
  *  key supplied — there is deliberately no override flag. */
 export function dodoClient(): DodoPayments {
   const key = process.env.DODO_PAYMENTS_API_KEY;
@@ -15,4 +15,4 @@ export function dodoClient(): DodoPayments {
   return new DodoPayments({ bearerToken: key, environment: "test_mode" });
 }
 
-export const PAYKIT_META = { paykit: "usage-credits", paykit_v: "1" } as const;
+export const PRICEKIT_META = { pricekit: "usage-credits", pricekit_v: "1" } as const;

@@ -112,7 +112,7 @@ export function renderPlan(appName: string, plan: Plan): string {
 /** plan.md = classify reasoning on top, then the PLAN block. Single source of truth downstream. */
 export function renderPlanMd(appName: string, plan: Plan): string {
   return [
-    `# ${appName} — pricing plan (paykit)`,
+    `# ${appName} — pricing plan (pricekit)`,
     ``,
     `## Why this model: ${plan.classification.blueprint}`,
     ...plan.classification.reasoning.map((r) => `- ${r}`),

@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// paykit CLI entry point. Dispatches to the tsx-run scripts so the published
+// pricekit CLI entry point. Dispatches to the tsx-run scripts so the published
 // package needs no build step — just this shebang + tsx as a real dependency.
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
@@ -18,21 +18,21 @@ const COMMANDS = {
 const [, , cmd, ...rest] = process.argv;
 
 if (!cmd || !(cmd in COMMANDS)) {
-  console.log(`paykit — pricing copilot for Dodo Payments credit billing
+  console.log(`pricekit — pricing copilot for Dodo Payments credit billing
 
 Usage:
-  npx paykit plan --app <name> --profile '<AppProfile JSON>'
-  npx paykit provision
-  npx paykit verify [--json]
-  npx paykit fire-usage [count]
+  npx pricekit plan --app <name> --profile '<AppProfile JSON>'
+  npx pricekit provision
+  npx pricekit verify [--json]
+  npx pricekit fire-usage [count]
 
-Docs: https://github.com/reetbatra/paykit`);
+Docs: https://github.com/reetbatra/pricekit`);
   process.exit(cmd ? 1 : 0);
 }
 
 const tsxBin = join(root, "node_modules", ".bin", "tsx");
 const child = spawn(tsxBin, [join(root, COMMANDS[cmd]), ...rest], {
   stdio: "inherit",
-  cwd: process.cwd(), // run against the CALLER's project, not paykit's own install dir
+  cwd: process.cwd(), // run against the CALLER's project, not pricekit's own install dir
 });
 child.on("exit", (code) => process.exit(code ?? 1));
