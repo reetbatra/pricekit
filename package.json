@@ -4,6 +4,29 @@
   "description": "Pricing copilot for Dodo Payments credit billing — recommends your pricing model, computes the numbers in the open, provisions test-mode billing, and verifies the wiring.",
   "license": "MIT",
   "type": "module",
+  "author": "Reet Batra",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/reetbatra/paykit.git"
+  },
+  "homepage": "https://github.com/reetbatra/paykit#readme",
+  "bugs": "https://github.com/reetbatra/paykit/issues",
+  "keywords": ["dodo-payments", "pricing", "billing", "credits", "usage-based-billing", "cli"],
+  "bin": {
+    "paykit": "./bin/paykit.js"
+  },
+  "files": [
+    "bin",
+    "scripts",
+    "src",
+    "skill",
+    "blueprints",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
   "scripts": {
     "plan": "tsx scripts/plan.ts",
     "provision": "tsx scripts/provision.ts",
@@ -13,10 +36,10 @@
   },
   "dependencies": {
     "dodopayments": "^2.42.2",
-    "dotenv": "^16.4.5"
+    "dotenv": "^16.4.5",
+    "tsx": "^4.19.0"
   },
   "devDependencies": {
-    "tsx": "^4.19.0",
     "typescript": "^5.6.0",
     "@types/node": "^22.0.0"
   }

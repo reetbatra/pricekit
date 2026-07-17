@@ -16,7 +16,7 @@ Read the repo and fill the `AppProfile` (see `paykit/src/detect-schema.ts`):
 Ask the user ONLY: paying users yet? · target margin (default 70%) ·
 price-point feel ($9/$19/$49) · launch promo (default 30% × 3mo).
 
-Then run: `npm run plan -- --app <name> --profile '<json>'` and present THE PLAN verbatim.
+Then run: `npx paykit plan --app <name> --profile '<json>'` and present THE PLAN verbatim.
 **Never do pricing arithmetic yourself. The engine does math; you do code.**
 
 ## Step 1 — Choose the adaptor (do not hand-roll)
@@ -53,6 +53,6 @@ query it for current payload shapes; otherwise use `./snippets` verbatim.
 
 ## Step 3 — Prove it
 
-Run `npm run verify -- --json`. Fix reds. Re-run.
+Run `npx paykit verify --json`. Fix reds. Re-run.
 You are NOT done until zero reds. Then summarize for the user:
 what changed, where the balance shows, what happens at the low-balance alert.

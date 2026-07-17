@@ -2,7 +2,7 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import { buildPlan, renderPlan, renderPlanMd } from "../src/plan-engine.js";
 import type { AppProfile } from "../src/detect-schema.js";
 
-// Usage: npm run plan -- --app <name> --profile '<json>'
+// Usage: npx paykit plan --app <name> --profile '<json>'
 // The integrating agent fills the profile by reading the repo (skill Step 0)
 // and passes it here. The engine does the math; agents never do arithmetic.
 
@@ -16,9 +16,9 @@ const profileJson = arg("profile");
 
 if (!profileJson) {
   console.error(
-    `Usage: npm run plan -- --app <name> --profile '<AppProfile JSON>'\n` +
+    `Usage: npx paykit plan --app <name> --profile '<AppProfile JSON>'\n` +
       `See src/detect-schema.ts for the profile shape. Example:\n` +
-      `npm run plan -- --app echoscribe --profile '{"has_paying_users":true,` +
+      `npx paykit plan --app echoscribe --profile '{"has_paying_users":true,` +
       `"output_countable":true,"trigger":"user","api_first":false,` +
       `"action_desc":"STT + summarize + infra","unit_name":"minute",` +
       `"cost_inputs":{"model_class":"stt","tokens_or_units":1,` +
@@ -49,4 +49,4 @@ writeFileSync(
   JSON.stringify({ app: appName, blueprint: plan.classification.blueprint, ...plan }, null, 2)
 );
 console.log(`\n  Written: .paykit/plan.md · .paykit/plan.json`);
-console.log(`  Next: npm run provision`);
+console.log(`  Next: npx paykit provision`);

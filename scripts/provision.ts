@@ -19,7 +19,7 @@ interface PlanFile {
 
 function loadPlan(): PlanFile {
   if (!existsSync(".paykit/plan.json")) {
-    throw new Error(`.paykit/plan.json not found — run \`npm run plan\` first.`);
+    throw new Error(`.paykit/plan.json not found — run \`npx paykit plan\` first.`);
   }
   return JSON.parse(readFileSync(".paykit/plan.json", "utf8"));
 }
@@ -173,5 +173,5 @@ console.log(`
   Then hand your coding agent this line:
 
     Read skill/SKILL.md and integrate this billing into the app.
-    When finished, run \`npm run verify -- --json\` and fix anything red.
+    When finished, run \`npx paykit verify --json\` and fix anything red.
 `);

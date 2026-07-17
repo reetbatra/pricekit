@@ -102,7 +102,7 @@ export function renderPlan(appName: string, plan: Plan): string {
   ];
   if (plan.promo) {
     lines.push(
-      `│   → Early bird: ${plan.promo.percent}% off × ${plan.promo.months} months ($${plan.promo.promo_price})`
+      `│   → Early bird: ${plan.promo.percent}% off × ${plan.promo.months} months ($${plan.promo.promo_price.toFixed(2)})`
     );
   }
   lines.push(`│`, `│   Bands per "Pricing in the AI Age" (Dodo, 2026). Override anything.`);

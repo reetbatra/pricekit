@@ -32,7 +32,7 @@ try {
   if (!existsSync(".paykit/blueprint.json")) throw new Error(".paykit/blueprint.json missing");
   record("1-env", "green", "API key + webhook secret + blueprint present; mode locked to test_mode");
 } catch (e) {
-  record("1-env", "red", (e as Error).message, "Fill .env per README; run `npm run provision`.");
+  record("1-env", "red", (e as Error).message, "Fill .env per README; run `npx paykit provision`.");
 }
 
 const client = process.env.DODO_PAYMENTS_API_KEY ? dodoClient() : null;
@@ -46,7 +46,7 @@ if (client && existsSync(".paykit/blueprint.json")) {
     await client.products.retrieve(bp.product_id);
     record("2-objects", "green", `meter ${bp.meter_id} · entitlement ${bp.credit_entitlement_id} · product ${bp.product_id}`);
   } catch (e) {
-    record("2-objects", "red", `provisioned object missing: ${(e as Error).message}`, "Re-run `npm run provision`.");
+    record("2-objects", "red", `provisioned object missing: ${(e as Error).message}`, "Re-run `npx paykit provision`.");
   }
 
   // 3 — real test checkout session

@@ -16,25 +16,30 @@ thing you never let a model improvise.
 
 ## Quickstart (~15 minutes)
 
+In your own app's directory — no clone needed, `npx` fetches paykit for you:
+
 ```bash
-git clone <this repo> && cd paykit && npm install
 # .env:  DODO_PAYMENTS_API_KEY=<your TEST MODE key>
 ```
 
 1. **Plan** — your agent builds the app profile (see `skill/SKILL.md` Step 0), then:
-   `npm run plan -- --app myapp --profile '<json>'`
+   `npx paykit plan --app myapp --profile '<json>'`
    → THE PLAN prints: cost/action, credit price at your margin, tier, overage,
    rollover, promo. Every number shown. Every number overridable.
-2. **Provision** — `npm run provision`
+2. **Provision** — `npx paykit provision`
    → meter + credit entitlement + product created in your Dodo **test** account
    (idempotent: re-runs create nothing new). Prints the one manual webhook step.
 3. **Integrate** — paste the printed line into your coding agent:
    *"Read skill/SKILL.md and integrate this billing into the app. When
-   finished, run `npm run verify -- --json` and fix anything red."*
-4. **Prove** — `npm run verify`
+   finished, run `npx paykit verify --json` and fix anything red."*
+4. **Prove** — `npx paykit verify`
    → 7 checks: env → objects → real checkout → real usage event →
    **forged webhook rejected** → **signed webhook handled** → balance readable.
    Green means wired. Not "probably wired".
+
+Developing paykit itself (not integrating it into an app)? Clone this repo and
+use `npm run plan` / `npm run provision` / `npm run verify` instead — same
+scripts, run locally.
 
 ## What it provisions (trust defaults)
 
@@ -81,6 +86,6 @@ replaces human task    → note only: outcome-based "worth exploring — earn it
 ## Roadmap
 
 `replay` (re-run the math when model prices drop) · `growth-loop` ·
-`agent-budgets` · `npx paykit` packaging.
+`agent-budgets`.
 
 MIT © contributors
