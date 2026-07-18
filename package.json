@@ -1,6 +1,6 @@
 {
   "name": "pricekit",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Pricing copilot for Dodo Payments credit billing — recommends your pricing model, computes the numbers in the open, provisions test-mode billing, and verifies the wiring.",
   "license": "MIT",
   "type": "module",
