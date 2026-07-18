@@ -1,5 +1,9 @@
-import { existsSync, mkdirSync, readFileSync, writeFileSync, appendFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync, appendFileSync, cpSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+import { dirname, join } from "node:path";
 import { dodoClient, PRICEKIT_META } from "../src/dodo.js";
+
+const pricekitRoot = join(dirname(fileURLToPath(import.meta.url)), "..");
 
 // Provisions the billing objects for the plan in .pricekit/plan.json.
 // Idempotent: lists before creating; re-runs create nothing new.
@@ -160,7 +164,18 @@ if (!existsSync(".gitignore") || !readFileSync(".gitignore", "utf8").includes(".
   appendFileSync(".gitignore", "\n.env\n");
 }
 
-console.log(`\n  Written: .pricekit/blueprint.json`);
+// Drop the skill file into the caller's repo — this is what the handoff line
+// below tells the agent to read. Without this copy, "Read skill/SKILL.md"
+// points at a file that doesn't exist in the caller's project.
+const skillSrc = join(pricekitRoot, "skill");
+if (existsSync(skillSrc)) {
+  cpSync(skillSrc, "skill", { recursive: true });
+  console.log(`  Written: .pricekit/blueprint.json · skill/SKILL.md`);
+} else {
+  console.log(`  Written: .pricekit/blueprint.json`);
+  console.log(`  ⚠ skill/ not found at ${skillSrc} — the handoff line below won't work until you copy it manually.`);
+}
+
 console.log(`
   ── ONE MANUAL STEP (webhooks need a public URL) ──────────────────
   1. In another terminal:  cloudflared tunnel --url http://localhost:3000
